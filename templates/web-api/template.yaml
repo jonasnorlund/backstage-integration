@@ -1,0 +1,89 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+# some metadata about the template itself
+metadata:
+  name: web-api
+  title: web-api
+  description: Scaffolds web-api template
+spec:
+  owner: user:guest
+  type: service
+
+  # these are the steps which are rendered in the frontend with the form input
+  parameters:
+    - title: Application
+      required:
+        - appname
+        - appid
+      properties:
+        appname:
+          title: Application
+          type: string
+          description: Application name
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        appid: 
+          title: Application Id
+          type: string
+          description: Id of application
+
+    - title: Choose a Repo location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedOwners:
+              - jonasnorlund
+            allowedHosts:
+              - github.com
+
+  # here's the steps that are executed in series in the scaffolder backend
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          appname: ${{ parameters.appname }}
+          appid: ${{ parameters.appid }}
+
+    # - id: fetch-docs
+    #   name: Fetch Docs
+    #   action: fetch:plain
+    #   input:
+    #     targetPath: ./content
+    #     url: https://github.com/backstage/community/tree/main/backstage-community-sessions
+
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: This is ${{ parameters.appname }}
+        repoUrl: ${{ parameters.repoUrl }}
+
+     # Onboard to Kubernetes
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: k8s_onboarding.yaml
+        repoUrl: 'github.com?repo=backstage&owner=jonasnorlund'
+        branchOrTagName: 'main'
+        workflowInputs:
+          appname: ${{ parameters.appname }}
+          appid: ${{ parameters.appid }}
+          apprepourl: ${{ parameters.appname }}  
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'

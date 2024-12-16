@@ -1,0 +1,41 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+# some metadata about the template itself
+metadata:
+  name: Offboarding
+  title: Offboarding
+  description: Offboarding application template
+spec:
+  owner: user:guest
+  type: service
+
+  # these are the steps which are rendered in the frontend with the form input
+  parameters:
+    - title: Application
+      required:
+        - appname
+        - apprepourl
+      properties:
+        appname:
+          title: Application
+          type: string
+          description: Application name
+          ui:autofocus: true
+        apprepourl:
+          title: Repository
+          type: string
+          description: Repository name
+          ui:autofocus: true
+
+  # here's the steps that are executed in series in the scaffolder backend
+  steps:
+    - id: github-action
+      name: Trigger GitHub Action to Offboard application
+      action: github:actions:dispatch
+      input:
+        workflowId: k8s_offboarding.yaml
+        repoUrl: 'github.com?repo=backstage&owner=jonasnorlund'
+        branchOrTagName: 'main'
+        workflowInputs:
+          appname: ${{ parameters.appname }}
+          apprepourl: ${{ parameters.apprepourl }}
