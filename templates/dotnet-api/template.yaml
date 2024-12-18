@@ -52,11 +52,8 @@ spec:
       action: publish:github
       input:
         allowedHosts: ["github.com"]
-        defaultBranch: main
-        protectDefaultBranch: true
         description: ${{ parameters.description }}
         repoUrl: github.com?owner=jonasnorlund&repo=${{ parameters.name }}
-        repoVisibility: internal
         gitAuthorName: ${{ user.entity.metadata.name }}
         gitAuthorEmail: ${{ user.entity.spec.profile.email }}
     - id: register
