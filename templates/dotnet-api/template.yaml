@@ -18,7 +18,7 @@ metadata:
   #   backstage.io/techdocs-ref: dir:.
 
 spec:
-  owner: guest
+  owner: group:aksadmins
   type: api
 
   parameters:
