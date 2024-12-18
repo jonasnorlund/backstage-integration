@@ -53,6 +53,7 @@ spec:
       input:
         allowedHosts: ["github.com"]
         description: ${{ parameters.description }}
+        defaultBranch: main
         repoUrl: github.com?owner=jonasnorlund&repo=${{ parameters.name }}
         gitAuthorName: ${{ user.entity.metadata.name }}
         gitAuthorEmail: ${{ user.entity.spec.profile.email }}
