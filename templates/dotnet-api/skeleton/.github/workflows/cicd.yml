@@ -1,0 +1,14 @@
+name: .NET api CI/CD
+on:
+  push:
+    branches: [main]
+jobs:
+  docker:
+    secrets: inherit
+    uses: jonasnorlund/backstage/.github/workflows/dotnet-ci-docker.yml@v1.0.0
+
+  # aks-deploy:
+  #   needs: docker
+  #   uses: jonasnorlund/backstage/.github/workflows/dotnet-cd-aks.yml@v1.0.0
+  #   secrets: inherit
+  

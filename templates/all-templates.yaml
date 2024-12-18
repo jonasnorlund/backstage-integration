@@ -7,3 +7,4 @@ spec:
   targets:
     - ./offboarding/template.yaml
     - ./web-api/template.yaml
+    - ./dotnet-api/template.yaml

@@ -1,0 +1,91 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+
+metadata:
+  name: dotnet-api
+  title: .NET api
+  description: A standard .net api
+  tags:
+    - dotnet
+    - azure
+
+  links:
+    - url: https://www.microsoft.com/net
+      title: .NET api demo
+      icon: website
+
+  # annotations:
+  #   backstage.io/techdocs-ref: dir:.
+
+spec:
+  owner: guest
+  type: api
+
+  parameters:
+    - title: Provide needed information
+      required:
+        - name
+      properties:
+        name:
+          title: Name
+          type: string
+          pattern: ^[a-zA-Z0-9.]+$
+          description: Unique name of the component.
+          ui:field: EntityNamePicker
+          ui:help: "Only letters, digits and dots are allowed."
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this service is for.
+  steps:
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ user.entity.metadata.name }}
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts: ["github.com"]
+        defaultBranch: main
+        protectDefaultBranch: true
+        description: ${{ parameters.description }}
+        repoUrl: github.com?owner=jonasnorlund&repo=${{ parameters.name }}
+        repoVisibility: internal
+        gitAuthorName: ${{ user.entity.metadata.name }}
+        gitAuthorEmail: ${{ user.entity.spec.profile.email }}
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+    # - action: catalog:fetch
+    #   id: fetch
+    #   name: Fetch catalog entity
+    #   input:
+    #     entityRef: system:default/${{ (parameters.system | parseEntityRef).name }}
+    
+    # - id: trigger-deploy-workflow
+    #   name: Deploy using GitOps approach
+    #   action: github:actions:dispatch
+    #   input:
+    #     repoUrl: github.com?repo=backstage&owner=jonasnorlund
+    #     workflowId: deploy_to_aks.yaml // fix this
+    #     branchOrTagName: main
+    #     workflowInputs:
+    #       name: ${{ parameters.name }}
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
+     
