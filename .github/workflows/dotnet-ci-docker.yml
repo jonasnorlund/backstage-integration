@@ -22,7 +22,7 @@ jobs:
       #     docker push ${{ vars.CONTAINER_REGISTRY }}/${{ github.repository }}:latest
       - name: Echo 
         run: |
-          echo CLIENT_ID is $CLIENT_ID
+          echo CLIENT_ID is: ${{ secrets.CLIENT_ID }}
           echo TENANT_ID is $TENANT_ID
           echo SUBSCRIPTIONID is $SUBSCRIPTIONID
           echo registry: ${{ secrets.MYSECRET }}
