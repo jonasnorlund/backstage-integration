@@ -2,9 +2,9 @@ name: dotnet ci docker
 on:
   workflow_call:
 
-permissions: 
-  id-token: write
-  contents: read
+# permissions: 
+#   id-token: write
+#   contents: read
 
 
 jobs:
@@ -27,6 +27,7 @@ jobs:
           client-id: ${{ secrets.CLIENT_ID }}
           tenant-id: ${{ secrets.TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTIONID }}
+          auth-type: IDENTITY
       
       - name: Validate Azure connection 
         run: |
