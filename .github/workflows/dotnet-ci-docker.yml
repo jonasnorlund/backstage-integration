@@ -20,6 +20,15 @@ jobs:
       # - name: Push Docker
       #   run: |
       #     docker push ${{ vars.CONTAINER_REGISTRY }}/${{ github.repository }}:latest
+      - name: Echo 
+        run: |
+          echo CLIENT_ID is $CLIENT_ID
+          echo TENANT_ID is $TENANT_ID
+          echo SUBSCRIPTIONID is $SUBSCRIPTIONID
+        env: 
+          CLIENT_ID: ${{ secrets.CLIENT_ID }} 
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+          SUBSCRIPTIONID: ${{ secrets.SUBSCRIPTIONID }}
 
       - name: Log into Azure
         uses: azure/login@v1
