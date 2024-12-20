@@ -1,0 +1,33 @@
+name: dotnet ci docker
+on:
+  workflow_call:
+
+permissions: 
+  id-token: write
+  contents: read
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+      # - name: Build with Docker
+      #   run: |
+      #     docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ vars.CONTAINER_REGISTRY }}
+      #     docker build --tag="${{ github.repository }}:latest" .
+      # - name: Push Docker
+      #   run: |
+      #     docker push ${{ vars.CONTAINER_REGISTRY }}/${{ github.repository }}:latest
+
+      - name: Log into Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTIONID }}
+      
+      - name: Validate Azure connection 
+        run: |
+          az account show
