@@ -26,20 +26,22 @@ jobs:
           echo TENANT_ID is $TENANT_ID
           echo SUBSCRIPTIONID is $SUBSCRIPTIONID
           echo registry: ${{ secrets.MYSECRET }}
+          echo myvar: ${{ vars.MYVAR }}
+          echo CONTAINER_REGISTRY: ${{ vars.CONTAINER_REGISTRY }}
         env: 
           CLIENT_ID: ${{ secrets.CLIENT_ID }} 
           TENANT_ID: ${{ secrets.TENANT_ID }}
           SUBSCRIPTIONID: ${{ secrets.SUBSCRIPTIONID }}
 
 
-      - name: Log into Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.CLIENT_ID }}
-          tenant-id: ${{ secrets.TENANT_ID }}
-          subscription-id: ${{ secrets.SUBSCRIPTIONID }}
-          auth-type: IDENTITY
+      # - name: Log into Azure
+      #   uses: azure/login@v1
+      #   with:
+      #     client-id: ${{ secrets.CLIENT_ID }}
+      #     tenant-id: ${{ secrets.TENANT_ID }}
+      #     subscription-id: ${{ secrets.SUBSCRIPTIONID }}
+      #     auth-type: IDENTITY
       
-      - name: Validate Azure connection 
-        run: |
-          az account show
+      # - name: Validate Azure connection 
+      #   run: |
+      #     az account show
